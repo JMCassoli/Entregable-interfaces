@@ -3,9 +3,11 @@ let ctx = canvas.getContext('2d');
 
 let width = canvas.width;
 let height = canvas.height;
-
+let initImage;
+let isImage = false;
 let inputImage = document.getElementById("inputImage");
-let btnBW= document.getElementById("blackWhite");
+let btnBW = document.getElementById("blackWhite"); 
+let btnBack = document.getElementById("back");
 
 
 inputImage.addEventListener("change", function() {
@@ -17,20 +19,29 @@ inputImage.addEventListener("change", function() {
         img.onload = () => {
             ctx.drawImage(img, 0, 0, width, height);
             ctx.putImageData(ctx.getImageData(0, 0, width, height),width,height)
+            initImage = ctx.getImageData(0, 0, width, height);
+            isImage = true;
         }
     };
 });
 
 btnBW.addEventListener("click", function () {
-
-        let imageData =ctx.getImageData(0,0,width,height);
+    let imageData =ctx.getImageData(0,0,width,height);
         for (let x=0; x<width; x++){
             for(let y=0; y<height; y++){
                 setGrey(imageData,x,y);
             }
         }
-        ctx.putImageData(imageData, 0, 0)   
+        ctx.putImageData(imageData, 0, 0)  
 })
+
+btnBack.addEventListener("click", goBack);
+
+function goBack() {
+    if (isImage) {
+        ctx.putImageData(initImage, 0, 0);
+    }
+}
 
 function setGrey(imageData,x,y) {
     let r = getRed(imageData,x,y);
