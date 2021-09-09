@@ -8,7 +8,7 @@ let isImage = false;
 let inputImage = document.getElementById("inputImage");
 let btnBW = document.getElementById("blackWhite"); 
 let btnBack = document.getElementById("back");
-
+let btnDelete = document.getElementById("delete");
 
 inputImage.addEventListener("change", function() {
     let reader = new FileReader();
@@ -35,13 +35,23 @@ btnBW.addEventListener("click", function () {
         ctx.putImageData(imageData, 0, 0)  
 })
 
-btnBack.addEventListener("click", goBack);
+btnDelete.addEventListener("click", function () {
+    let imageData =ctx.getImageData(0,0,width,height);
+        for (let x=0; x<width; x++){
+            for(let y=0; y<height; y++){
+                setPixel(imageData,x,y,255,255,255,255);
+            }
+        }
+        ctx.putImageData(imageData, 0, 0)  
+        inputImage.value="";
+        isImage=false;
+})
 
-function goBack() {
+btnBack.addEventListener("click", function () {
     if (isImage) {
         ctx.putImageData(initImage, 0, 0);
     }
-}
+})
 
 function setGrey(imageData,x,y) {
     let r = getRed(imageData,x,y);
