@@ -9,6 +9,7 @@ let inputImage = document.getElementById("inputImage");
 let btnBW = document.getElementById("blackWhite"); 
 let btnBack = document.getElementById("back");
 let btnDelete = document.getElementById("delete");
+let btnInvert = document.getElementById("invert");
 
 inputImage.addEventListener("change", function() {
     let reader = new FileReader();
@@ -25,6 +26,16 @@ inputImage.addEventListener("change", function() {
     };
 });
 
+btnInvert.addEventListener("click", function() {
+    imageData =ctx.getImageData(0,0,width,height);
+    for (let x=0; x<width; x++){
+        for(let y=0; y<height; y++){
+            setOpposite(imageData,x,y);
+        }
+    }
+    ctx.putImageData(imageData, 0, 0)  ;
+});
+
 btnBW.addEventListener("click", function () {
     let imageData =ctx.getImageData(0,0,width,height);
         for (let x=0; x<width; x++){
@@ -33,7 +44,7 @@ btnBW.addEventListener("click", function () {
             }
         }
         ctx.putImageData(imageData, 0, 0)  
-})
+});
 
 btnDelete.addEventListener("click", function () {
     let imageData =ctx.getImageData(0,0,width,height);
@@ -45,13 +56,21 @@ btnDelete.addEventListener("click", function () {
         ctx.putImageData(imageData, 0, 0)  
         inputImage.value="";
         isImage=false;
-})
+});
 
 btnBack.addEventListener("click", function () {
     if (isImage) {
         ctx.putImageData(initImage, 0, 0);
     }
-})
+});
+
+function setOpposite(imageData,x,y) {
+    let r = getRed(imageData,x,y);
+    let g = getGreen(imageData,x,y);
+    let b = getBlue(imageData,x,y);
+    setPixel(imageData,x,y,255-r,255-g,255-b,255);
+
+}
 
 function setGrey(imageData,x,y) {
     let r = getRed(imageData,x,y);
@@ -61,7 +80,7 @@ function setGrey(imageData,x,y) {
 
     setPixel(imageData,x,y,grey,grey,grey,255);
 
-}
+};
 
 function setPixel(imageData,x,y,r,g,b,a) {
     let index= (x + y * imageData.width)*4;
@@ -75,15 +94,15 @@ function setPixel(imageData,x,y,r,g,b,a) {
 function getRed(imageData,x,y) {
     let index = (x + y * imageData.width)*4;
     return imageData.data[index+0];
-}
+};
 
 function getGreen(imageData,x,y) {
     let index = (x + y * imageData.width)*4;
     return imageData.data[index+1];
-}
+};
 
 function getBlue(imageData,x,y) {
     let index = (x + y * imageData.width)*4;
-    return imageData.data[index+1];
-}
+    return imageData.data[index+2];
+};
 
