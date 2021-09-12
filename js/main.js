@@ -6,10 +6,11 @@ let height = canvas.height;
 let initImage;
 let isImage = false;
 let inputImage = document.getElementById("inputImage");
-let btnBW = document.getElementById("blackWhite"); 
+let btnGrey = document.getElementById("grey"); 
 let btnBack = document.getElementById("back");
 let btnDelete = document.getElementById("delete");
 let btnInvert = document.getElementById("invert");
+let btnBW = document.getElementById("blackWhite"); 
 
 inputImage.addEventListener("change", function() {
     let reader = new FileReader();
@@ -26,6 +27,33 @@ inputImage.addEventListener("change", function() {
     };
 });
 
+btnBW.addEventListener("click", function () {
+    let imageData =ctx.getImageData(0,0,width,height);
+        for (let x=0; x<width; x++){
+            for(let y=0; y<height; y++){
+                setBW(imageData,x,y);
+            }
+        }
+        ctx.putImageData(imageData, 0, 0)  
+});
+
+function setBW(imageData,x,y) {
+    let r = getRed(imageData,x,y);
+    let g = getGreen(imageData,x,y);
+    let b = getBlue(imageData,x,y);
+    let grey = (r+g+b)/3;
+    if (grey > (255/4)){
+
+        setPixel(imageData,x,y,0,0,0,255);
+    
+    }
+    else{
+        setPixel(imageData,x,y,255,255,255,255);
+
+    };
+}
+
+
 btnInvert.addEventListener("click", function() {
     imageData =ctx.getImageData(0,0,width,height);
     for (let x=0; x<width; x++){
@@ -36,7 +64,7 @@ btnInvert.addEventListener("click", function() {
     ctx.putImageData(imageData, 0, 0)  ;
 });
 
-btnBW.addEventListener("click", function () {
+btnGrey.addEventListener("click", function () {
     let imageData =ctx.getImageData(0,0,width,height);
         for (let x=0; x<width; x++){
             for(let y=0; y<height; y++){
