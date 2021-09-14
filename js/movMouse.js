@@ -12,9 +12,15 @@ var mousePos;
 var mousePosNew;
 var pointerX = 0;
 var pointerY = 0;
-let style = "#AA0000";
+let style = "#000000";
 let lWidth= 2;
 var isMouseDown=false;
+
+let btnEraser = document.getElementById("eraser");
+
+btnEraser.addEventListener("click", function(){
+    style = "#FFFFFF";
+})
 
 let btnColor=document.getElementById("lineColor");
 
@@ -41,7 +47,7 @@ canvas.addEventListener("mousemove",function(evt){
       if (isMouseDown){
             console.log( width, height,mousePos.x ,mousePos.y , "mdown",isMouseDown);
         drawLine()}
-    }, 25);
+    }, 15);
   });
 
 

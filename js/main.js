@@ -14,6 +14,8 @@ let btnBW = document.getElementById("blackWhite");
 let btnBright = document.getElementById("bright");
 let btnBlur = document.getElementById("blur");
 let btnSat = document.getElementById("saturation");
+let btnDownload = document.getElementById("download");
+
 
 inputImage.addEventListener("change", function() {
 
@@ -68,6 +70,16 @@ function setSaturation(imageData,x,y) {
     let colortransf=transformHSVtoRGB(colorATransf.h, colorATransf.s*1.3, colorATransf.v);
     setPixel(imageData,x,y,colortransf.r,colortransf.g,colortransf.b, 255);
     };
+
+
+    btnDownload.addEventListener("click", function() {
+    {
+            let link = document.createElement('a');
+            link.download = 'index.jpg';
+            link.href = canvas.toDataURL()
+            link.click();
+        }
+    })
 
 
 // -------------------------  BLUR   -----------------------------------------------
