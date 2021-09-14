@@ -16,19 +16,38 @@ let btnBlur = document.getElementById("blur");
 let btnSat = document.getElementById("saturation");
 
 inputImage.addEventListener("change", function() {
+
     let reader = new FileReader();
     reader.readAsDataURL(inputImage.files[0]);
     reader.onload = () => {
         let img = new Image();
         img.src = reader.result;
         img.onload = () => {
-            ctx.drawImage(img, 0, 0, width, height);
+            
+            drawImageScaled(img, ctx);
+            // let wRatio = canvas.width / img.width    ;
+            // let hRatio = canvas.height / img.height  ;
+            // let ratio  = Math.min ( wRatio, hRatio );
+            // ctx.drawImage(img, 0,0, img.width, img.height, 0,0,img.width*ratio, img.height*ratio);
+
+           // ctx.drawImage(img, 0, 0, width, height);
             ctx.putImageData(ctx.getImageData(0, 0, width, height),width,height)
             initImage = ctx.getImageData(0, 0, width, height);
             isImage = true;
         }
     };
 });
+
+function drawImageScaled(img, ctx) {
+    let canvas = ctx.canvas ;
+    let hRatio = canvas.width  / img.width    ;
+    let vRatio =  canvas.height / img.height  ;
+    let ratio  = Math.min ( hRatio, vRatio );
+    let centerShift_x = ( canvas.width - img.width*ratio ) / 2;
+    let centerShift_y = ( canvas.height - img.height*ratio ) / 2;  
+    ctx.clearRect(0,0,canvas.width, canvas.height);
+    ctx.drawImage(img, 0,0, img.width, img.height, centerShift_x,centerShift_y,img.width*ratio, img.height*ratio);  
+ }
 
 btnSat.addEventListener("click", function () {
     let imageData =ctx.getImageData(0,0,width,height);
@@ -249,7 +268,7 @@ btnGrey.addEventListener("click", function () {
         ctx.putImageData(imageData, 0, 0)  
 });
 
-btnDelete.addEventListener("click", function () {
+btnDelete.addEventListener("click", function(){
     let imageData =ctx.getImageData(0,0,width,height);
         for (let x=0; x<width; x++){
             for(let y=0; y<height; y++){
