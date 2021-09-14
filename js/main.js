@@ -12,6 +12,8 @@ let btnDelete = document.getElementById("delete");
 let btnInvert = document.getElementById("invert");
 let btnBW = document.getElementById("blackWhite"); 
 let btnBright = document.getElementById("bright");
+let btnBlur = document.getElementById("blur");
+let btnSat = document.getElementById("saturation");
 
 inputImage.addEventListener("change", function() {
     let reader = new FileReader();
@@ -27,6 +29,75 @@ inputImage.addEventListener("change", function() {
         }
     };
 });
+
+btnSat.addEventListener("click", function () {
+    let imageData =ctx.getImageData(0,0,width,height);
+        for (let x=1; x<width-1; x++){
+            for(let y=1; y<height-1; y++){
+                setSaturation(imageData,x,y);
+            }
+        }
+        ctx.putImageData(imageData, 0, 0)  ;  
+});
+
+
+function setSaturation(imageData,x,y) {
+    let r = getRed(imageData,x,y);
+    let g = getGreen(imageData,x,y);
+    let b = getBlue(imageData,x,y);
+    let colorATransf=transformRGBtoHSV(r, g, b);
+    let colortransf=transformHSVtoRGB(colorATransf.h, colorATransf.s*1.3, colorATransf.v);
+    setPixel(imageData,x,y,colortransf.r,colortransf.g,colortransf.b, 255);
+    };
+
+
+// -------------------------  BLUR   -----------------------------------------------
+
+
+let imageCopia =ctx.getImageData(0,0,width,height);
+
+
+
+btnBlur.addEventListener("click", function () {
+    let imageData =ctx.getImageData(0,0,width,height);
+        for (let x=1; x<width-1; x++){
+            for(let y=1; y<height-1; y++){
+                setBlur(imageData,x,y);
+            }
+        }
+        ctx.putImageData(imageCopia, 0, 0)  
+});
+
+
+function setBlur(imageData,x,y) {
+   let fina=x+2;
+   let finb=y+2;
+  var rr=0;
+  var gg=0;
+  var bb=0;
+    for (let i=x-1; i<fina; i++){
+        for(let j=y-1; j<finb; j++){
+           
+            let r = getRed(imageData,i,j);
+            let g = getGreen(imageData,i,j);
+            let b = getBlue(imageData,i,j);
+            rr+=r;
+            gg+=g;
+            bb+=b;
+        }        
+
+    }
+    rr=rr/9;
+    gg=gg/9;
+    bb=bb/9;
+    setPixel(imageCopia,x,y,rr,gg,bb,255);
+ 
+   
+};
+
+
+
+
 
 
 
