@@ -1,5 +1,6 @@
 .nav-item {
     margin-right: 10px;
+    color:white;
 }
 .container {
     display: flex;
@@ -7,10 +8,22 @@
   }
   
 canvas{
+    margin-top: 10%;
     border:2px solid black;
     box-sizing:border-box;
 }
 canvas#canvasPaint{
     padding-left: 0px;
     padding-right: 0px;
+    background-color: white;
+
+}
+body{
+    background-color: rgb(112, 112, 112);
+    height: 1em;
+}
+h2{color:white;}
+
+#thick{
+    margin-top: 10%;
 }

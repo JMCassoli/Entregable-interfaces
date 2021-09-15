@@ -16,7 +16,9 @@ let btnBlur = document.getElementById("blur");
 let btnSat = document.getElementById("saturation");
 let btnDownload = document.getElementById("download");
 
-
+let btnUpload = document.getElementById("upload").addEventListener("click", function(){
+    inputImage.click();
+})
 inputImage.addEventListener("change", function() {
 
     let reader = new FileReader();
@@ -51,6 +53,14 @@ function drawImageScaled(img, ctx) {
     ctx.drawImage(img, 0,0, img.width, img.height, centerShift_x,centerShift_y,img.width*ratio, img.height*ratio);  
  }
 
+ // ---------------------------------- Saturacion  ------------------------------------------------
+
+ 
+ 
+//Recorremos el canvas pixel por pixel y llamamos con las coordenadas x e y a la funcion SetSaturation.
+// Luego presentamos la imagen.
+
+
 btnSat.addEventListener("click", function () {
     let imageData =ctx.getImageData(0,0,width,height);
         for (let x=1; x<width-1; x++){
@@ -61,6 +71,11 @@ btnSat.addEventListener("click", function () {
         ctx.putImageData(imageData, 0, 0)  ;  
 });
 
+///SetSaturation: extraemos los colores del pixel pasado como parámetro. Luego, llamamos a la función transformRGBtoHSV
+// con dichos colores, función que transforma de rgb a hsb. Dicha funcion la obtuvimos investigando en la web.
+// Con los valores de hsb obtenidos, llamamos a la función inversa - transformHSVtoRGB -, tambien bajada de la web, 
+// pero aumentando en un 5% la saturación (s). De esta forma, obtenemos los colores rgb iniciales, con una saturación aumentada 
+// ese 5%. luego, llamamos a setpixel para grabar los colores en dicho pixel.
 
 function setSaturation(imageData,x,y) {
     let r = getRed(imageData,x,y);
@@ -84,6 +99,10 @@ function setSaturation(imageData,x,y) {
 
 // -------------------------  BLUR   -----------------------------------------------
 
+// Creamos una imageCopia, donde dibujaremos la imagen con los cambios realizados.
+//Recorremos el canvas pixel por pixel y llamamos con las coordenadas x e y a la funcion SetBlur
+// sin incluir los bordes (de x=1 a width-1).Luego presentamos la imagen.
+
 
 let imageCopia =ctx.getImageData(0,0,width,height);
 
@@ -99,6 +118,9 @@ btnBlur.addEventListener("click", function () {
         ctx.putImageData(imageCopia, 0, 0)  
 });
 
+// setBlur: vamos recorriendo la matriz de 3x3, que rodea al pixel pasado por parametro, en rr, gg, y bb 
+// guardamos la suma de los valores de cada unos de los colores de dicha matriz, y hacemos luego el promedio de los valores 
+// obtenidos, dividiendolo por 9. Luego,escribimos el pixel con el color resultante de dicho promedio. 
 
 function setBlur(imageData,x,y) {
    let fina=x+2;
@@ -132,19 +154,10 @@ function setBlur(imageData,x,y) {
 
 
 
-// ----------------------------------------   hsb  --------------------------------
+// ----------------------------------------   hsb Brillo   --------------------------------
 
-/*                          variacion de brillo                                */
-
-
-/* accepts parameters
- * h  Object = {h:x, s:y, v:z}
- * OR 
- * h, s, v
- * 
-*/
-
-
+//Recorremos el canvas pixel por pixel y llamamos con las coordenadas x e y a la funcion SetBright.
+  // Luego presentamos la imagen.
 
 btnBright.addEventListener("click", function () {
     let imageData =ctx.getImageData(0,0,width,height);
@@ -155,6 +168,13 @@ btnBright.addEventListener("click", function () {
         }
         ctx.putImageData(imageData, 0, 0)  
 });
+
+//SetBright: extraemos los colores del pixel pasado como parámetro. Luego, llamamos a la función transformRGBtoHSV
+// con dichos colores, función que transforma de rgb a hsb. 
+// Con los valores de hsb obtenidos, llamamos a la función inversa - transformHSVtoRGB -, 
+// pero aumentando en un 5% el brillo (b). De esta forma, obtenemos los colores rgb iniciales, con un brillo aumentado 
+// ese 5%. luego, llamamos a setpixel para grabar los colores en dicho pixel.
+
 
 function setBright(imageData,x,y) {
     let r = getRed(imageData,x,y);
@@ -193,11 +213,7 @@ function transformHSVtoRGB(h, s, v) {
     };
 }
 
-/* accepts parameters
- * r  Object = {r:x, g:y, b:z}
- * OR 
- * r, g, b
-*/
+
 function transformRGBtoHSV(r, g, b) {
     if (arguments.length === 1) {
         g = r.g, b = r.b, r = r.r;
@@ -226,10 +242,11 @@ function transformRGBtoHSV(r, g, b) {
 
 
 
+// ------------------------------------ Black & Wait --------------------------------------------
 
 
-
-
+// Black & Wait: Recorremos el canvas pixel por pixel y llamamos con las coordenadas x e y a la funcion SetBW.
+// Luego presentamos la imagen.
 
 
 
@@ -242,6 +259,12 @@ btnBW.addEventListener("click", function () {
         }
         ctx.putImageData(imageData, 0, 0)  
 });
+
+// Esta función obtiene los colores del pixel pasado como parámetro, luego lo transforma en gris haciendo
+// un promedio de los colores obtenidos para luego dividir este promedio por 2. Si el valor resultante
+// es mayor que la media de colores posibles (255/2), llamo a la funcion setpixel con color negro, sino, 
+// lo llamamos con blanco.
+
 
 function setBW(imageData,x,y) {
     let r = getRed(imageData,x,y);
@@ -260,6 +283,11 @@ function setBW(imageData,x,y) {
 }
 
 
+//--------------------------------------------  Invertir Colores ----------------------------------------
+
+//Recorremos el canvas pixel por pixel y llamamos con las coordenadas x e y a la funcion SetOpposite.
+// Luego presentamos la imagen.
+
 btnInvert.addEventListener("click", function() {
     imageData =ctx.getImageData(0,0,width,height);
     for (let x=0; x<width; x++){
@@ -269,6 +297,12 @@ btnInvert.addEventListener("click", function() {
     }
     ctx.putImageData(imageData, 0, 0)  ;
 });
+
+
+// --------------------------------------------- Escala de grises ------------------------------------------
+ 
+///Recorremos el canvas pixel por pixel y llamamos con las coordenadas x e y a la funcion SetGrey.
+// Luego presentamos la imagen.
 
 btnGrey.addEventListener("click", function () {
     let imageData =ctx.getImageData(0,0,width,height);
@@ -298,6 +332,11 @@ btnBack.addEventListener("click", function () {
     }
 });
 
+
+// SetOpposite: Esta función obtiene los colores del pixel pasado como parámetro, luego obtiene su opuesto
+// haciendo el siguiente cálculo inverso de r =(255-r), inverso de g=(255-g), e inverso de b=(255-b).
+// Luego, llamamos a setpixel para grabar los colores en dicho pixel.
+
 function setOpposite(imageData,x,y) {
     let r = getRed(imageData,x,y);
     let g = getGreen(imageData,x,y);
@@ -305,6 +344,10 @@ function setOpposite(imageData,x,y) {
     setPixel(imageData,x,y,255-r,255-g,255-b,255);
 
 }
+
+// SetGrey: Esta función obtiene los colores del pixel pasado como parámetro, luego obtiene 
+// obtien un tono de gris calculando el promedio de dichos valores.
+// Luego, llamamos a setpixel para grabar los colores en dicho pixel.
 
 function setGrey(imageData,x,y) {
     let r = getRed(imageData,x,y);
