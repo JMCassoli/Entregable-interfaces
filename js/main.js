@@ -6,6 +6,7 @@ let height = canvas.height;
 let initImage;
 let isImage = false;
 let inputImage = document.getElementById("inputImage");
+let btnSepia = document.getElementById("sepia")
 let btnGrey = document.getElementById("greyscale"); 
 let btnBack = document.getElementById("back");
 let btnDelete = document.getElementById("delete");
@@ -19,6 +20,12 @@ let btnDownload = document.getElementById("download");
 let btnUpload = document.getElementById("upload").addEventListener("click", function(){
     inputImage.click();
 })
+
+//Esta funcion de activa al haber un cambio en el input de archivos y realiza en siguiente procedimiento:
+//Instancia el objeto "FileReader()" el cual se encarga de cargar en memoria el archivo agregado al input,
+//una vez cargado el archivo se instancia una imagen con la direccion resultante y una vez cargada la imagen se
+//dibuja en el canvas.
+
 inputImage.addEventListener("change", function() {
 
     let reader = new FileReader();
@@ -29,12 +36,6 @@ inputImage.addEventListener("change", function() {
         img.onload = () => {
             
             drawImageScaled(img, ctx);
-            // let wRatio = canvas.width / img.width    ;
-            // let hRatio = canvas.height / img.height  ;
-            // let ratio  = Math.min ( wRatio, hRatio );
-            // ctx.drawImage(img, 0,0, img.width, img.height, 0,0,img.width*ratio, img.height*ratio);
-
-           // ctx.drawImage(img, 0, 0, width, height);
             ctx.putImageData(ctx.getImageData(0, 0, width, height),width,height)
             initImage = ctx.getImageData(0, 0, width, height);
             isImage = true;
@@ -42,6 +43,9 @@ inputImage.addEventListener("change", function() {
     };
 });
 
+//drawImageScaled: Recibe la imagen que se quiere dibujar, calcula el aspect ratio en alto y ancho de la imagen en base al 
+//canvas, dibuja la imagen centrada y colocada en base al ratio mas bajo, osea al valor (alto o ancho) que mayor diferencia mantiene con el canvas.
+//funcion bajada de la web.
 function drawImageScaled(img, ctx) {
     let canvas = ctx.canvas ;
     let hRatio = canvas.width  / img.width    ;
@@ -242,7 +246,7 @@ function transformRGBtoHSV(r, g, b) {
 
 
 
-// ------------------------------------ Black & Wait --------------------------------------------
+// ------------------------------------ Black & White --------------------------------------------
 
 
 // Black & Wait: Recorremos el canvas pixel por pixel y llamamos con las coordenadas x e y a la funcion SetBW.
@@ -331,6 +335,45 @@ btnBack.addEventListener("click", function () {
         ctx.putImageData(initImage, 0, 0);
     }
 });
+
+// --------------------------------------------- Sepia ------------------------------------------
+
+///Recorremos el canvas pixel por pixel y llamamos con las coordenadas x e y a la funcion SetSepia.
+// Luego presentamos la imagen.
+
+btnSepia.addEventListener("click", function () {
+    let imageData =ctx.getImageData(0,0,width,height);
+    
+    
+    for (let x=0; x<width; x++){
+        for(let y=0; y<height; y++){
+            setSepia(imageData,x,y);
+        }
+    };
+        
+        ctx.putImageData(imageData, 0, 0)  
+});
+
+
+
+//SetSepia: Esta función obtiene los colores del pixel pasado como parámetro y realiza un calculo bajado de la web
+//para definir el valor de los colores del pixel con un efecto sepia.
+// Luego, llamamos a setpixel para grabar los colores en dicho pixel.
+function setSepia(imageData,x,y) {
+               
+    let r = getRed(imageData,x,y);
+    let g = getGreen(imageData,x,y);
+    let b = getBlue(imageData,x,y);
+        
+    
+     
+  
+     let outputRed = (r * .393) + (g *.769) + (b * .189);
+     let outputGreen = (r * .349) + (g *.686) + (b * .168);
+     let outputBlue = (r * .272) + (g *.534) + (b * .131);
+
+     setPixel(imageData,x,y,outputRed,outputGreen,outputBlue,255);
+};
 
 
 // SetOpposite: Esta función obtiene los colores del pixel pasado como parámetro, luego obtiene su opuesto
